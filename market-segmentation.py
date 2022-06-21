@@ -17,6 +17,7 @@ def get_distribution_by_column(col, data):
     plt.title('Distribution of ' + col, fontsize = 20)
     plt.xlabel('Range of ' + col)
     plt.ylabel('Count')
+    plt.ion()
     plt.show()
 
 def limit_columns(columns, data):
@@ -33,6 +34,7 @@ def scatterplot_2d(col1, col2, data, labeled):
     plt.xlabel(col1)
     plt.ylabel(col2) 
     plt.title(col2 + ' vs ' + col1)
+    plt.ion()
     plt.show()
 
 def scattlerplot_3d(col1, col2, col3, data, number_of_clusters):
@@ -45,6 +47,7 @@ def scattlerplot_3d(col1, col2, col3, data, number_of_clusters):
     plt.xlabel(col1)
     plt.ylabel(col2)
     ax.set_zlabel(col3)
+    plt.ion()
     plt.show()
 
 def wcss(max_clusters, data):
@@ -63,6 +66,7 @@ def elbowcurve(max_clusters, data):
     plt.xlabel("K Value")
     plt.xticks(np.arange(1,max_clusters,1))
     plt.ylabel("WCSS")
+    plt.ion()
     plt.show()
 
 def label_clusters(number_of_clusters, data, limited_data):
@@ -79,12 +83,51 @@ def get_clustered_ids(data, number_of_clusters, id_row_name):
         print(row[id_row_name].values)
         print('=======================================')  
 
-data = read_data("market_data.csv")
-X = limit_columns(["Annual Income (k$)", "Spending Score (1-100)", "Age"], data)
+data = None
+line = input()
+while line != "quit":
+    tokens = line.split(";")
+
+    if tokens[0] == "help":
+        print("HELP") #todo finish help section
+        line = input()
+        continue
+    elif tokens[0] == "read_data":
+        data = read_data(tokens[1])
+        line = input()
+        continue
+
+    if data.empty:
+        print("Please load data before doing further operations!")
+        line = input()
+        continue
+
+    if tokens[0] == "get_distribution":
+        get_distribution_by_column(tokens[1].strip())
+    elif tokens[0] == "elbowcurve":
+        limited_data = limit_columns(tokens[2:], data)
+        elbowcurve(int(tokens[1]), limited_data)
+    elif tokens[0] == "get_clusters_2d":
+        limited_data = limit_columns(tokens[2:], data)
+        labeled_data = label_clusters(int(tokens[1]), data, limited_data)
+        scatterplot_2d(tokens[2], tokens[3], labeled_data, True)
+        get_clustered_ids(labeled_data, int(tokens[1]), tokens[4])
+    elif tokens[0] == "get_clusters_3d":
+        limited_data = limit_columns(tokens[2:], data)
+        labeled_data = label_clusters(int(tokens[1]), data, limited_data)
+        scattlerplot_3d(tokens[2], tokens[3], tokens[4], labeled_data, int(tokens[1]))
+        get_clustered_ids(labeled_data, int(tokens[1]), tokens[5])
+    else:
+        print("Invalid command. Please check the doc, or use 'help'!")
+
+    line = input()
+
+# data = read_data("market_data.csv")
+# X = limit_columns(["Annual Income (k$)", "Spending Score (1-100)", "Age"], data)
 # elbowcurve(11, X)
 #scatterplot_2d("Annual Income (k$)", "Spending Score (1-100)", data)
 #get_distribution_by_column('Age', data)
-labeled_data = label_clusters(5, data, X)
+# labeled_data = label_clusters(5, data, X)
 # print(labeled_data.head())
 # scattlerplot_3d("Age", "Annual Income (k$)", "Spending Score (1-100)", labeled_data, 5)
-get_clustered_ids(labeled_data, 5, "CustomerID")
+# get_clustered_ids(labeled_data, 5, "CustomerID")
