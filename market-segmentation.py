@@ -35,6 +35,18 @@ def scatterplot_2d(col1, col2, data, labeled):
     plt.title(col2 + ' vs ' + col1)
     plt.show()
 
+def scattlerplot_3d(col1, col2, col3, data, number_of_clusters):
+    fig = plt.figure(figsize=(20,10))
+    ax = fig.add_subplot(111, projection='3d')
+    colors = ['purple', 'red', 'blue', 'green', 'yellow']
+    for i in range(0, number_of_clusters):
+        ax.scatter(data[col1][data.label == i], data[col2][data.label == i], data[col3][data.label == i], c=colors[i], s=60)
+    ax.view_init(35, 185)
+    plt.xlabel(col1)
+    plt.ylabel(col2)
+    ax.set_zlabel(col3)
+    plt.show()
+
 def wcss(max_clusters, data):
     wcss=[]
     for i in range(1,max_clusters):
@@ -60,11 +72,19 @@ def label_clusters(number_of_clusters, data, limited_data):
     data["label"] = labels
     return data
 
+def get_clustered_ids(data, number_of_clusters, id_row_name):
+    for i in range(0, number_of_clusters):
+        row = data[data["label"] == i]
+        print(f'Number of rows in group_{i} = {len(row)}')
+        print(row[id_row_name].values)
+        print('=======================================')  
+
 data = read_data("market_data.csv")
-X = limit_columns(["Annual Income (k$)", "Spending Score (1-100)"], data)
-#elbowcurve(11, X)
+X = limit_columns(["Annual Income (k$)", "Spending Score (1-100)", "Age"], data)
+# elbowcurve(11, X)
 #scatterplot_2d("Annual Income (k$)", "Spending Score (1-100)", data)
 #get_distribution_by_column('Age', data)
 labeled_data = label_clusters(5, data, X)
-print(labeled_data.head())
-scatterplot_2d("Annual Income (k$)", "Spending Score (1-100)", labeled_data, True)
+# print(labeled_data.head())
+# scattlerplot_3d("Age", "Annual Income (k$)", "Spending Score (1-100)", labeled_data, 5)
+get_clustered_ids(labeled_data, 5, "CustomerID")
