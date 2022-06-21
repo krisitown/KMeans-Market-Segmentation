@@ -83,28 +83,41 @@ def get_clustered_ids(data, number_of_clusters, id_row_name):
         print(row[id_row_name].values)
         print('=======================================')  
 
+
+print("Welcome to market-segmantation!")
+print("If you are unsure how to use the program, write 'help'!")
 data = None
 line = input()
 while line != "quit":
     tokens = line.split(";")
 
     if tokens[0] == "help":
-        print("HELP") #todo finish help section
+        print("This program gives you tools to analyze and clusterize data.")
+        print("Using the comand line, you should input lines in the following format:")
+        print("<command_name>;<arg1>;<arg2>;...<argN>")
+        print("List of commands: ")
+        print("  * read_data;<path_to_csv_data_file> // loads the data into working memory")
+        print("  * get_distribution;<column_name> // gives you a distribution of the data by choosing a column")
+        print("  * get_elbowcurve;<max_clusters>;<column1>;...<columnN> // displays elbow curve based on maximum number of clusters and N columns, used in calculating WCSS")
+        print("  * get_clusters_2d;<number_of_clusters>;<column1>;<column2>;<id_column_name> // displays a 2d plot with colored clusters, and gives information about the row ids by cluster")
+        print("  * get_clusters_3d;<number_of_clusters>;<column1>;<column2>;<column3>;<id_column_name> // displays a 3d plot with colored clusters, and gives information about the row ids by cluster")
+        print("  * quit // exits the program")
         line = input()
         continue
     elif tokens[0] == "read_data":
         data = read_data(tokens[1])
+        print("Successfully read data from csv!")
         line = input()
         continue
 
-    if data.empty:
+    if data is None:
         print("Please load data before doing further operations!")
         line = input()
         continue
 
     if tokens[0] == "get_distribution":
-        get_distribution_by_column(tokens[1].strip())
-    elif tokens[0] == "elbowcurve":
+        get_distribution_by_column(tokens[1].strip(), data)
+    elif tokens[0] == "get_elbowcurve":
         limited_data = limit_columns(tokens[2:], data)
         elbowcurve(int(tokens[1]), limited_data)
     elif tokens[0] == "get_clusters_2d":
