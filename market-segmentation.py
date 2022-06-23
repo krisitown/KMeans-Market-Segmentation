@@ -134,13 +134,3 @@ while line != "quit":
         print("Invalid command. Please check the doc, or use 'help'!")
 
     line = input()
-
-# data = read_data("market_data.csv")
-# X = limit_columns(["Annual Income (k$)", "Spending Score (1-100)", "Age"], data)
-# elbowcurve(11, X)
-#scatterplot_2d("Annual Income (k$)", "Spending Score (1-100)", data)
-#get_distribution_by_column('Age', data)
-# labeled_data = label_clusters(5, data, X)
-# print(labeled_data.head())
-# scattlerplot_3d("Age", "Annual Income (k$)", "Spending Score (1-100)", labeled_data, 5)
-# get_clustered_ids(labeled_data, 5, "CustomerID")
